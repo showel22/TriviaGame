@@ -1,0 +1,23 @@
+body {
+    background: url('../images/sneaker-wallpaper-hd.jpg');
+}
+
+.header {
+    padding: 15px;
+}
+
+.trivia-box {
+    background-color: #e9ecef;
+    border-radius: .3rem;
+    margin-bottom: 2rem;
+    height: 350px;
+    padding: 25px;
+}
+
+.countdown-box {
+    background-color: #e9ecef;
+    border-radius: .3rem;
+    margin-bottom: 2rem;
+    height: 350px;
+    padding: 25px;
+}
