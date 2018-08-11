@@ -131,12 +131,23 @@ Game.prototype.wrong = function(question){
 
 Game.prototype.gameOver = function(){
     this.view.empty();
+    clearInterval(this.interval);
+    clearTimeout(this.timer);
+    $('#countdown').empty();
     this.view.append($('<h3>').text("You answered all questions!"));
-    this.view.append('<p>You got ' +  + '</p>');
+    this.view.append('<p>You got ' + this.answeredQuestions. + '</p>');
 }
 
 Game.prototype.startTimer = function(time, callback){
     clearTimeout(this.timer);
+    this.showTimeRemaining(time);
+    this.timer = setTimeout(function(){
+        callback.call(this);
+    }.bind(this), time * 1000);
+};
+
+Game.prototype.showTimeRemaining = function(time){
+    clearInterval(this.interval);
     this.countdownTimer = time;
     $('#countdown').empty();
     $('#countdown').append('<p>Time Remaining: ' + this.countdownTimer + '</p>');
@@ -145,11 +156,7 @@ Game.prototype.startTimer = function(time, callback){
         $('#countdown').empty();
         $('#countdown').append('<p>Time Remaining: ' + this.countdownTimer + '</p>');
     }.bind(this), 1000);
-    this.timer = setTimeout(function(){
-        clearInterval(this.interval);
-        callback.call(this);
-    }.bind(this), time * 1000);
-};
+}
 
 $(document).ready(function(){
     var game = new Game('triviaGame');
