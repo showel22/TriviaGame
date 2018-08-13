@@ -78,7 +78,7 @@ Game.prototype.ask = function(){
     question.append($('<h4>').text(this.currentQuestion.text));
     question.append($('<br>'));
     this.currentQuestion.answers.forEach((answer, index) => {
-        var answerElement = $('<p>').text(answer.text);
+        var answerElement = $('<p>').text(index+1 + '. ' + answer.text);
         answerElement.attr('data-id', index);
         answerElement.click( function(event){
             var answerId = $(event.target).attr('data-id');
@@ -108,7 +108,7 @@ Game.prototype.timeUp = function(){
 
 Game.prototype.correct = function(question){
     this.view.empty();
-    this.view.append($('<h3>').text("Congrats!"));
+    this.view.append($('<h3>').text("Congrats, you got it right!"));
     this.currentQuestion.correct = true;
     this.answeredQuestions.push(this.currentQuestion);
     if(this.questions.length <= 0){
@@ -120,7 +120,7 @@ Game.prototype.correct = function(question){
 
 Game.prototype.wrong = function(question){
     this.view.empty();
-    this.view.append($('<h3>').text("Oh No!"));
+    this.view.append($('<h3>').text("Oh No, better luck on the next question."));
     this.answeredQuestions.push(this.currentQuestion);
     if(this.questions.length <= 0){
         this.gameOver();
@@ -133,9 +133,24 @@ Game.prototype.gameOver = function(){
     this.view.empty();
     clearInterval(this.interval);
     clearTimeout(this.timer);
-    $('#countdown').empty();
     this.view.append($('<h3>').text("You answered all questions!"));
-    this.view.append('<p>You got ' + this.answeredQuestions. + '</p>');
+    this.answeredQuestions.forEach((question, index) => {
+        var correctAnswer = question.answers.find((answer) => {
+            return answer.correct;
+        });
+        if(question.correct){
+            this.view.append('<p>' + index+1 + '. ' + question.text + '</p>');
+            this.view.append('<p class="correct-answer">Correct Answer: ' + correctAnswer.text + '</p>');
+        }else{
+            this.view.append('<p>' + index+1 + '. ' + question.text + '</p>');
+            this.view.append('<p class="incorrect-answer">Correct Answer: ' + correctAnswer.text + '</p>');
+        }
+    });
+    var button = $('<button id="restartButton" class="btn btn-primary btn-lg btn-block center-block col-12">Restart</button>');
+    button.click(function(){
+        this.start();
+    }.bind(this));
+    this.view.append(button);
 }
 
 Game.prototype.startTimer = function(time, callback){
@@ -149,12 +164,29 @@ Game.prototype.startTimer = function(time, callback){
 Game.prototype.showTimeRemaining = function(time){
     clearInterval(this.interval);
     this.countdownTimer = time;
-    $('#countdown').empty();
-    $('#countdown').append('<p>Time Remaining: ' + this.countdownTimer + '</p>');
+    var progress = $('<div class="progress">');
+    var progressBar = $('<div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar">');
+    progressBar.attr('id', 'progressBar');
+    progressBar.css('width', '100%');
+    progress.append(progressBar);
+    this.view.prepend(progress, '<br />');
+    this.view.prepend('<p class="text-center">Time Remaining: <span id="timer">' + this.countdownTimer + '</span></p>');
     this.interval = setInterval(function(){
         this.countdownTimer--;
-        $('#countdown').empty();
-        $('#countdown').append('<p>Time Remaining: ' + this.countdownTimer + '</p>');
+        var percentRemain = ((this.countdownTimer / time ) * 100);
+        $('#timer').text(this.countdownTimer);
+        $('#progressBar').css('width', percentRemain + '%');
+        $('#progressBar').removeClass('bg-success');
+         $('#progressBar').removeClass('bg-warning');
+          $('#progressBar').removeClass('bg-danger');
+        if(percentRemain > 66.6){
+            $('#progressBar').addClass('bg-success');
+        }else if(percentRemain < 66.6 && percentRemain > 33.3){
+            $('#progressBar').addClass('bg-warning');
+        }else if(percentRemain < 33.3){
+            $('#progressBar').addClass('bg-danger');
+        }
+        $('#progressBar').addClass('bg-success');
     }.bind(this), 1000);
 }
 

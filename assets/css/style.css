@@ -6,8 +6,12 @@ body {
     padding: 15px;
 }
 
+.jumbotron {
+    background-color: #fff;
+}
+
 .trivia-box {
-    background-color: #e9ecef;
+    background-color: #fff;
     border-radius: .3rem;
     margin-bottom: 2rem;
     height: auto;
@@ -15,9 +19,17 @@ body {
 }
 
 .countdown-box {
-    background-color: #e9ecef;
+    background-color: #fff;
     border-radius: .3rem;
     margin-bottom: 2rem;
     height: auto;
     padding: 25px;
+}
+
+.correct-answer {
+    color: green;
+}
+
+.incorrect-answer {
+    color: red;
 }
